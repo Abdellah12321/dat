@@ -1,0 +1,47 @@
+let StartDate = startofmonth(now());
+let EndDate = now();
+
+let CPU =
+Perf
+| where TimeGenerated between (StartDate .. EndDate)
+| where ObjectName == "Processor"
+| where CounterName == "% Processor Time"
+| where InstanceName == "_Total"
+| summarize
+    AvgCPU = round(avg(CounterValue), 2),
+    MaxCPU = round(max(CounterValue), 2),
+    CPUHoursOver5Percent = dcountif(bin(TimeGenerated, 1h), CounterValue > 5)
+    by Computer;
+
+let Disk =
+Perf
+| where TimeGenerated between (StartDate .. EndDate)
+| where CounterName in ("Disk Transfers/sec", "Disk Reads/sec", "Disk Writes/sec")
+| summarize
+    AvgDiskOps = round(avg(CounterValue), 2),
+    MaxDiskOps = round(max(CounterValue), 2)
+    by Computer;
+
+let Heartbeats =
+Heartbeat
+| where TimeGenerated between (StartDate .. EndDate)
+| summarize
+    FirstHeartbeat = min(TimeGenerated),
+    LastHeartbeat = max(TimeGenerated),
+    HeartbeatHours = dcount(bin(TimeGenerated, 1h))
+    by Computer;
+
+Heartbeats
+| join kind=leftouter CPU on Computer
+| join kind=leftouter Disk on Computer
+| project
+    Computer,
+    FirstHeartbeat,
+    LastHeartbeat,
+    HeartbeatHours,
+    AvgCPU,
+    MaxCPU,
+    CPUHoursOver5Percent,
+    AvgDiskOps,
+    MaxDiskOps
+| order by AvgCPU asc
