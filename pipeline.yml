@@ -1,0 +1,94 @@
+name: "Prod - Level 4 avmdaisql0"
+
+trigger: none
+pr: none
+
+parameters:
+- name: tf_command
+  displayName: Terraform Command
+  type: string
+  default: plan
+  values:
+  - plan
+  - apply
+  - destroy
+
+variables:
+- group: Production-avmdaisql0
+
+resources:
+  repositories:
+  - repository: prod-landing-zones
+    type: git
+    name: prod-landing-zones
+    ref: refs/heads/main
+
+jobs:
+- job: Terraform
+  displayName: "Terraform - ${{ parameters.tf_command }}"
+
+  pool:
+    vmImage: ubuntu-latest
+
+  steps:
+
+  # prod-configuration contains:
+  # - this pipeline
+  # - the tfvars files
+  - checkout: self
+    displayName: Checkout prod-configuration
+    path: s/prod-configuration
+    clean: true
+
+  # prod-landing-zones contains:
+  # - Terraform code
+  # - AVM module deployments
+  - checkout: prod-landing-zones
+    displayName: Checkout prod-landing-zones
+    path: s/prod-landing-zones
+    clean: true
+
+  # Install Terraform
+  - task: TerraformInstaller@1
+    displayName: Install Terraform
+    inputs:
+      terraformVersion: $(TERRAFORM_VERSION)
+
+  # Initialise Terraform and connect to the remote state backend
+  - task: TerraformTaskV4@4
+    displayName: Terraform Init
+    inputs:
+      provider: azurerm
+      command: init
+
+      workingDirectory: $(Pipeline.Workspace)/s/prod-landing-zones/$(TERRAFORM_WORKING_DIRECTORY)
+
+      backendServiceArm: $(AZURE_SERVICE_CONNECTION)
+      backendAzureRmResourceGroupName: $(TFSTATE_RESOURCE_GROUP)
+      backendAzureRmStorageAccountName: $(TFSTATE_STORAGE_ACCOUNT)
+      backendAzureRmContainerName: $(TFSTATE_CONTAINER)
+      backendAzureRmKey: $(TFSTATE_KEY)
+
+  # Validate the Terraform configuration
+  - task: TerraformTaskV4@4
+    displayName: Terraform Validate
+    inputs:
+      provider: azurerm
+      command: validate
+
+      workingDirectory: $(Pipeline.Workspace)/s/prod-landing-zones/$(TERRAFORM_WORKING_DIRECTORY)
+
+  # Run plan, apply or destroy depending on the selected parameter
+  - task: TerraformTaskV4@4
+    displayName: "Terraform ${{ parameters.tf_command }}"
+    inputs:
+      provider: azurerm
+      command: ${{ parameters.tf_command }}
+
+      workingDirectory: $(Pipeline.Workspace)/s/prod-landing-zones/$(TERRAFORM_WORKING_DIRECTORY)
+
+      environmentServiceNameAzureRM: $(AZURE_SERVICE_CONNECTION)
+
+      commandOptions: >-
+        -var-file="$(Pipeline.Workspace)/s/prod-configuration/$(TFVARS_FILE_PATH)"
+        -auto-approve
