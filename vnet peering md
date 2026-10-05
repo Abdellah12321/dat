@@ -1,0 +1,193 @@
+For cross-subscription VNet peering, we use both `vnet_peerings` and `vnet_peerings_v1` depending on which subscription owns the source VNet.
+
+The normal `vnet_peerings` implementation uses the AzureRM provider, so it creates the peering in the provider’s configured subscription. This is fine when the source VNet is in the pipeline/default subscription.
+
+For the reverse peering, where the source VNet is in another subscription, `vnet_peerings_v1` is used. It uses AzAPI and the source VNet’s full Azure resource ID as the `parent_id`, so Azure knows exactly which subscription contains the VNet.
+
+Example:
+
+```hcl
+parent_id = "/subscriptions/<subscription-id>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<vnet-name>"
+```
+
+Because the subscription is part of the resource ID, we do not need to switch the pipeline’s default subscription just to create the remote-side peering.
+
+The usual pattern is:
+
+```text
+Local/default subscription → Remote subscription
+    use vnet_peerings
+
+Remote subscription → Local/default subscription
+    use vnet_peerings_v1
+```
+
+A typical tfvars configuration looks like this:
+
+```hcl
+# Local → Remote
+vnet_peerings = {
+  spoke_to_hub = {
+    name = "spoke-to-hub"
+
+    from = {
+      vnet_key = "spoke_vnet"
+    }
+
+    to = {
+      lz_key   = "networking_hub"
+      vnet_key = "hub_vnet"
+    }
+
+    allow_virtual_network_access = true
+    allow_forwarded_traffic      = true
+    allow_gateway_transit        = false
+    use_remote_gateways          = true
+  }
+}
+
+# Remote → Local
+vnet_peerings_v1 = {
+  hub_to_spoke = {
+    name = "hub-to-spoke"
+
+    from = {
+      lz_key   = "networking_hub"
+      vnet_key = "hub_vnet"
+    }
+
+    to = {
+      vnet_key = "spoke_vnet"
+    }
+
+    allow_virtual_network_access = true
+    allow_forwarded_traffic      = true
+    allow_gateway_transit        = true
+    use_remote_gateways          = false
+  }
+}
+```
+
+When checking whether a landing zone supports `vnet_peerings_v1`, there are a few places to look.
+
+First, check the root variable definition. There should be something like:
+
+```hcl
+variable "vnet_peerings_v1" {
+  type    = any
+  default = {}
+}
+```
+
+Then check the root `module.tf` and make sure the variable is actually passed into the child landing-zone module:
+
+```hcl
+networking = {
+  vnets             = var.vnets
+  vnet_peerings     = var.vnet_peerings
+  vnet_peerings_v1  = var.vnet_peerings_v1
+  vhub_peerings     = var.vhub_peerings
+}
+```
+
+If `vnet_peerings_v1` exists in the child module but is missing here, values from the tfvars will never reach the implementation.
+
+Next, check the child module, for example:
+
+```text
+./aztf/no-vm-prefix
+```
+
+Look at the `networking` variable definition and confirm it accepts `vnet_peerings_v1`. Depending on how the module is written, it may look similar to:
+
+```hcl
+variable "networking" {
+  type = any
+}
+```
+
+or, if it uses a typed object:
+
+```hcl
+variable "networking" {
+  type = object({
+    vnets            = any
+    vnet_peerings    = any
+    vnet_peerings_v1 = any
+    vhub_peerings    = any
+  })
+}
+```
+
+Then check any locals that rebuild the networking object. For example:
+
+```hcl
+locals {
+  networking = {
+    vnets            = var.networking.vnets
+    vnet_peerings    = var.networking.vnet_peerings
+    vnet_peerings_v1 = var.networking.vnet_peerings_v1
+  }
+}
+```
+
+This is important because the value can be declared and passed into the module but still get dropped if a local object does not copy it through.
+
+Finally, search the child module for the actual resource implementation:
+
+```text
+vnet_peerings_v1
+```
+
+You should find an AzAPI resource or module logic similar to:
+
+```hcl
+resource "azapi_resource" "vnet_peerering_v1" {
+  for_each = local.networking.vnet_peerings_v1
+
+  type      = "Microsoft.Network/virtualNetworks/virtualNetworkPeerings@<api-version>"
+  name      = each.value.name
+  parent_id = <resolved source vnet full resource id>
+
+  body = {
+    properties = {
+      remoteVirtualNetwork = {
+        id = <resolved destination vnet id>
+      }
+
+      allowVirtualNetworkAccess = each.value.allow_virtual_network_access
+      allowForwardedTraffic     = each.value.allow_forwarded_traffic
+      allowGatewayTransit       = each.value.allow_gateway_transit
+      useRemoteGateways         = each.value.use_remote_gateways
+    }
+  }
+}
+```
+
+The most important part to confirm is that `parent_id` resolves to the source VNet’s full ID, including the subscription:
+
+```hcl
+/subscriptions/<subscription-id>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<vnet>
+```
+
+So the full flow to verify is:
+
+```text
+peering.tfvars
+    ↓
+var.vnet_peerings_v1
+    ↓
+root module networking.vnet_peerings_v1
+    ↓
+child module var.networking.vnet_peerings_v1
+    ↓
+local.networking.vnet_peerings_v1
+    ↓
+AzAPI resource
+    ↓
+source VNet full resource ID used as parent_id
+```
+
+If all of those are present, the landing zone is wired correctly for cross-subscription peering.
+
+The pipeline identity still needs RBAC permissions on both VNets. `vnet_peerings_v1` changes how the resource is addressed, but it does not bypass Azure permissions.
