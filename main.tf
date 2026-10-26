@@ -1,79 +1,70 @@
 terraform {
+  required_version = ">= 1.6.0"
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.105.0"
-      #version = "~> 3.113.0"
-    }
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = "~> 2.43.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.5.1"
-    }
-    external = {
-      source  = "hashicorp/external"
-      version = "~> 1.2.0"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.2.2"
-    }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 2.2.0"
-    }
-    azurecaf = {
-      source  = "aztfmod/azurecaf"
-      version = "~>1.2.0"
-    }
-  }
-  required_version = ">= 0.15"
-}
-
-
-provider "azurerm" {
-  features {
-    key_vault {
-      #purge_soft_delete_on_destroy = true
+      version = ">= 3.80.0"
     }
   }
 }
 
 provider "azurerm" {
   features {}
-  alias = "vhub"
 }
 
-data "azurerm_client_config" "current" {}
+# -------------------------------------------------
+# Resource Group (match existing CAF RG)
+# -------------------------------------------------
+resource "azurerm_resource_group" "this" {
+  name     = var.resource_group.name
+  location = var.resource_group.location
+
+  tags = var.resource_group.tags
+}
+
+# -------------------------------------------------
+# AVM Virtual Machine (creates NIC + VM + managed data disks)
+# -------------------------------------------------
+module "vm" {
+  source  = "Azure/avm-res-compute-virtualmachine/azurerm"
+  version = "0.18.0"
+  
+
+  # Core
+  name                = var.vm.name
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+ 
+
+  # Required by your AVM VM module schema
+  sku_size = var.vm.sku_size
+  zone                    = var.vm.zone 
 
 
-locals {
+  # OS / auth
+  os_type        = var.vm.os_type
+  admin_username = var.vm.admin_username
+  license_type   = var.vm.license_type
 
-    # Update the tfstates map
-  tfstates = merge(
-    tomap(
-      {
-        (var.landingzone.key) = local.backend[var.landingzone.backend_type]
-      }
-    )
-    ,
-    try(data.terraform_remote_state.remote[var.landingzone.global_settings_key].outputs.tfstates, {})
-  )
+  # Image
+  source_image_reference = var.vm.source_image_reference
+
+  # OS Disk
+  os_disk = var.vm.os_disk
+
+  # Identity (optional, but supports SystemAssigned)
+  managed_identities = var.vm.managed_identities
+
+  # NIC (created/configured by module)
+  network_interfaces = var.network_interfaces
+
+  # Managed data disks (created + attached by module) — bursting supported
+  data_disk_managed_disks = var.data_disk_managed_disks
+
+  encryption_at_host_enabled = false 
 
 
-  backend = {
-    azurerm = {
-      storage_account_name = var.tfstate_storage_account_name
-      container_name       = var.tfstate_container_name
-      resource_group_name  = var.tfstate_resource_group_name
-      key                  = var.tfstate_key
-      level                = var.landingzone.level
-      tenant_id            = var.tenant_id
-      subscription_id      = data.azurerm_client_config.current.subscription_id
-    }
-  }
-
+  run_commands = {}
+  run_commands_secrets = {}
 }
