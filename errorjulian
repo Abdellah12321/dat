@@ -1,0 +1,38 @@
+I’ve got a change in to remove the P2S VPN connection from the Prod Virtual Network Gateway – it was part of a POC for AutoPilot which isn’t needed – the DevOps plan showed that it would remove the config, but when I ran the apply it came back with a plugin crashed error.
+
+I’ve added the config back in Terraform so that it’s as it was – can you take a look to see if you can see what’s caused the error?
+
+Error: Plugin did not respond 
+with module.networking.module.virtual_network_gateways["hubvpngw_vngw_prod"].azurerm_virtual_network_gateway.vngw, 
+on aztf/custom/modules/networking/virtual_network_gateways/module.tf line 11, in resource "azurerm_virtual_network_gateway" "vngw": 
+11: resource "azurerm_virtual_network_gateway" "vngw" { 
+The plugin encountered an error, and failed to respond to the 
+plugin.(*GRPCProvider).ApplyResourceChange call. The plugin logs may contain 
+more details. 
+Stack trace from the terraform-provider-azurerm_v3.114.0_x5 plugin: 
+panic: runtime error: index out of range [0] with length 0 
+
+goroutine 77 [running]: 
+github.com/hashicorp/terraform-provider-azurerm/internal/services/network.expandVirtualNetworkGatewayVpnClientConfig(0xc0001c0580?, {{0xc0001c058f, 0x24}, {0xc0001c05c3, 0x13}, {0xc0001c060a, 0x19}}) 
+github.com/hashicorp/terraform-provider-azurerm/internal/services/network/virtual_network_gateway_resource.go:1086 +0x1a1b 
+github.com/hashicorp/terraform-provider-azurerm/internal/services/network.resourceVirtualNetworkGatewayUpdate(0xc005583900, {0x7365220?, 0xc0005de000}) 
+github.com/hashicorp/terraform-provider-azurerm/internal/services/network/virtual_network_gateway_resource.go:824 +0x585 
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*Resource).update(0x8bd5928?, {0x8bd5928?, 0xc0055bfd70?}, 0xd?, {0x7365220?, 0xc0005de000?}) 
+github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/resource.go:800 +0x163 
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*Resource).Apply(0xc0019e8e00, {0x8bd5928, 0xc0055bfd70}, 0xc001f6e340, 0xc005583780, {0x7365220, 0xc0005de000}) 
+github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/resource.go:919 +0x83a 
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*GRPCProviderServer).ApplyResourceChange(0xc000aa29f0, {0x8bd5928?, 0xc0055bfc80?}, 0xc0006e17c0) 
+github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/grpc_provider.go:1078 +0xdbc 
+github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server.(*server).ApplyResourceChange(0xc001ee1540, {0x8bd5928?, 0xc0055bf290?}, 0xc002f2e9a0) 
+github.com/hashicorp/terraform-plugin-go@v0.23.0/tfprotov5/tf5server/server.go:865 +0x3d0 
+github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/tfplugin5._Provider_ApplyResourceChange_Handler({0x8077640?, 0xc001ee1540}, {0x8bd5928, 0xc0055bf290}, 0xc005582c80, 0x0) 
+github.com/hashicorp/terraform-plugin-go@v0.23.0/tfprotov5/internal/tfplugin5/tfplugin5_grpc.pb.go:518 +0x169 
+google.golang.org/grpc.(*Server).processUnaryRPC(0xc0001e0e00, {0x8bd5928, 0xc0055bf200}, {0x8c01b60, 0xc001f18780}, 0xc0055bb0e0, 0xc001ffcb10, 0xe2ad598, 0x0) 
+google.golang.org/grpc@v1.63.2/server.go:1369 +0xe23 
+google.golang.org/grpc.(*Server).handleStream(0xc0001e0e00, {0x8c01b60, 0xc001f18780}, 0xc0055bb0e0) 
+google.golang.org/grpc@v1.63.2/server.go:1780 +0x1016 
+google.golang.org/grpc.(*Server).serveStreams.func2.1() 
+google.golang.org/grpc@v1.63.2/server.go:1019 +0x8b 
+created by google.golang.org/grpc.(*Server).serveStreams.func2 in goroutine 30 
+google.golang.org/grpc@v1.63.2/server.go:1030 +0x135 
+Error: The terraform-provider-azurerm_v3.114.0_x5 plugin crashed!
