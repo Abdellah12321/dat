@@ -295,3 +295,19 @@ locals {
   }
 
 }
+
+
+
+
+
+
+
+
+----
+
+
+az network vnet-gateway show \
+  --resource-group "ofs-rg-prod-hub-uks" \
+  --name "ofs-vgw-prod-hubvpngw-uks" \
+  --query "{name:name,state:provisioningState,p2s:vpnClientConfiguration}" \
+  --output json
