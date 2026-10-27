@@ -36,3 +36,180 @@ google.golang.org/grpc@v1.63.2/server.go:1019 +0x8b
 created by google.golang.org/grpc.(*Server).serveStreams.func2 in goroutine 30 
 google.golang.org/grpc@v1.63.2/server.go:1030 +0x135 
 Error: The terraform-provider-azurerm_v3.114.0_x5 plugin crashed!
+
+
+
+
+
+-------------------------
+
+
+
+ Terraform will perform the following actions:
+2026-10-24T09:22:49.8778202Z 
+2026-10-24T09:22:49.8808027Z   # module.networking.module.virtual_network_gateways["hubvpngw_vngw_prod"].azurerm_virtual_network_gateway.vngw will be updated in-place
+2026-10-24T09:22:49.8808698Z   ~ resource "azurerm_virtual_network_gateway" "vngw" {
+2026-10-24T09:22:49.8809495Z         id                                    = "/subscriptions/8d34626a-7ae9-44cb-aeb5-a1a4f6cbfb6d/resourceGroups/ofs-rg-prod-hub-uks/providers/Microsoft.Network/virtualNetworkGateways/ofs-vgw-prod-hubvpngw-uks"
+2026-10-24T09:22:49.8810367Z         name                                  = "ofs-vgw-prod-hubvpngw-uks"
+2026-10-24T09:22:49.8810788Z         tags                                  = {
+2026-10-24T09:22:49.8811170Z             "BusinessImpact" = "High"
+2026-10-24T09:22:49.8811555Z             "BusinessUnit"   = "IS"
+2026-10-24T09:22:49.8811941Z             "CostCode"       = "122"
+2026-10-24T09:22:49.8812338Z             "CreationDate"   = "13/01/2021"
+2026-10-24T09:22:49.8813189Z             "DecomDate"      = "N/A"
+2026-10-24T09:22:49.8813804Z             "DeploymentType" = "Terraform-ADO"
+2026-10-24T09:22:49.8816549Z             "OperatingHours" = "24x7"
+2026-10-24T09:22:49.8817262Z             "ProductOwner"   = "Office365TechnicalAdministrators@ofsted.gov.uk"
+2026-10-24T09:22:49.8826537Z             "environment"    = "production"
+2026-10-24T09:22:49.8826971Z             "landingzone"    = "networking_hub"
+2026-10-24T09:22:49.8827410Z             "level"          = "level2"
+2026-10-24T09:22:49.8827794Z             "module"         = "virtual_network_gateways"
+2026-10-24T09:22:49.8828204Z             "rover_version"  = "aztfmod/rover:1.3.10-2402.2908"
+2026-10-24T09:22:49.8828569Z         }
+2026-10-24T09:22:49.8828924Z         # (14 unchanged attributes hidden)
+2026-10-24T09:22:49.8829163Z 
+2026-10-24T09:22:49.8829503Z       - vpn_client_configuration {
+2026-10-24T09:22:49.8829851Z           - address_space        = [
+2026-10-24T09:22:49.8830192Z               - "172.16.245.0/24",
+2026-10-24T09:22:49.8830536Z             ] -> null
+2026-10-24T09:22:49.8830877Z           - vpn_auth_types       = [
+2026-10-24T09:22:49.8831209Z               - "Certificate",
+2026-10-24T09:22:49.8831540Z             ] -> null
+2026-10-24T09:22:49.8831882Z           - vpn_client_protocols = [
+2026-10-24T09:22:49.8832213Z               - "IkeV2",
+2026-10-24T09:22:49.8832576Z             ] -> null
+2026-10-24T09:22:49.8832988Z 
+2026-10-24T09:22:49.8833253Z           - root_certificate {
+2026-10-24T09:22:49.8833496Z               - name             = "ofsted_root" -> null
+2026-10-24T09:22:49.8835429Z               - public_cert_data = "MIIFFzCCAv+gAwIBAgIQeHPXH/2H/INOiGehmeicBTANBgkqhkiG9w0BAQwFADAeMRwwGgYDVQQDExNPRlNURUQgS1NQMSBST09UIENBMB4XDTE3MDIwOTEwMjU1N1oXDTM3MDIwOTEwMzU1NFowHjEcMBoGA1UEAxMTT0ZTVEVEIEtTUDEgUk9PVCBDQTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMy7GTZmFsrkN9uQTh2lpf8KunI21ei63JvWdMkNCW3E6pdAEhapBi4uGlGOjOR/y9ZBP1mEj3Qs8HL/nZGsZ26tvJdfZYVg1b5VnJ5SQPGgrFiQYMUNeWXoPygxs0p8hco2CGNqgcSLb5ShS9yA4Hp1p22j5pbeDpNkuViNNQRjJ9Zw685XoTH0Ab7/IsoYyTZ8H+2hDGR/qPFYe1E0kxhXS2+D14DGCaLNp/GmCY9vPAlRdyAUy/q3VuZ8fWh/m8cAz+qRiTroMIqqBI6KNhtpyfW9PGvf5IlZgRyDy6CxgGSWOiRCAO7JbIPVPwJQUTwxR7gKGuU2RcR+n8ZSUe7EKlFOSzTJZV8kmZdM+lKchARWQNVU1VFtzX6SKnF91CAw5m+Wmv1+StGQpHlgTX0/SLH1pnrVk7Hg6l+6+/6BOouKyfUm8NGRjBZLY1/3JZDLE3vxjiS/22zVkXyWZv371i8iyRe0NWGfCoBa5iqVMpGGPciouY/eWJUpbUUIGAy/wLFzMzohGkVxYZgACXMqocFV1huhdEZVfwqUFKm95XVt70Y2nibUp0MBeCY1o6fAIFRyR5Gbe6RP6rcal47sYEfuG+I61QCLNWkYGCoz0QPWieupwpG52lBKMCcKbdoUSIRgUhU3U8/6q6y0mlirXniPS2x7qZHDJqJ9G1pdAgMBAAGjUTBPMAsGA1UdDwQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTO8wQ/beBGNHrgad75e2v7hfN+6zAQBgkrBgEEAYI3FQEEAwIBADANBgkqhkiG9w0BAQwFAAOCAgEAIaWv6lg7gqs7KVNakBr0W2/icN6N+0orhQAsQVS28d74uihiL6mH5BgyGWasBCQlWQOM8ScVSNPpplzTKt/GgV3yqff+3C03BwBUIqTnygUcswNHxrDPtOFlkKMy/4ux2bO0EzSxIJEhLUVbFY/r16oNzaduxsqT1t2fYi+jAPwGsMp1JktXnEzOid3Iy9vmqXp/2XfOW+MgKKlstF/iSNaxeaZBrUDjn0nMD5AhFiuFAUhXiMVYMrt6E2F/4dZD3ToWJ7tG31bP3OhL+KsoMuYKhjaJXad05xg5X4eIP754jSflCzIbku/dw2LGjEmnUUBxrJmFPRg9rAQG6uacKc712ak5yPxyPHSDQTTfMlOvdZrVkSM6DG0ge5TKN2teiMhLuLokpNeVCmR3g1VlNy3kvVUUIQ27w6uELNuuaQrfuP+jjWxIGr24BFIEO47tnIcb3duLFBsLqAdfIra/EPwQJMP3lXZNXdj5eAQbK+jmDvecMmoNEX04Hi69l2GCuZ57T6C+WKSJhm5m3oGHKOv+K5+PmfquthnWpx/AS9xFnapB1yqbOq31PxoUa87hC0QPTpNZRqCjfzazJ9NgPT/X7jUATuXABtO+PB/5It6yQxi8o4bweYZUnEC8XmDQqQ9BcWnMUzBCLZLtJQxbp8hgH3C9ej1sMcqbHwlDtTY=" -> null
+2026-10-24T09:22:49.8837089Z             }
+2026-10-24T09:22:49.8837205Z         }
+2026-10-24T09:22:49.8837252Z 
+2026-10-24T09:22:49.8837383Z         # (3 unchanged blocks hidden)
+2026-10-24T09:22:49.8837656Z     }
+2026-10-24T09:22:49.8837712Z 
+2026-10-24T09:22:49.8837847Z Plan: 0 to add, 1 to change, 0 to destroy.
+2026-10-24T09:22:49.8837914Z 
+2026-10-24T09:22:49.8838046Z Warning: Deprecated Resource
+2026-10-24T09:22:49.8838112Z 
+2026-10-24T09:22:49.8838281Z   with module.networking.module.mariadb_servers.azurerm_mariadb_configuration.mariadb_configuration,
+2026-10-24T09:22:49.8838538Z   on aztf/custom/modules/databases/mariadb_server/configuration.tf line 4, in resource "azurerm_mariadb_configuration" "mariadb_configuration":
+2026-10-24T09:22:49.8838842Z    4: resource "azurerm_mariadb_configuration" "mariadb_configuration" {
+2026-10-24T09:22:49.8838925Z 
+2026-10-24T09:22:49.8839084Z Azure Database for MariaDB and its sub resources are scheduled for retirement
+2026-10-24T09:22:49.8839278Z by 2024-09-19 and will migrate to using Azure Database for MySQL Flexible
+2026-10-24T09:22:49.8839428Z Server:
+2026-10-24T09:22:49.8839589Z https://learn.microsoft.com/en-us/azure/mariadb/whats-happening-to-mariadb.
+2026-10-24T09:22:49.8839784Z The `azurerm_mariadb_configuration` resource is deprecated and will be
+2026-10-24T09:22:49.8839960Z removed in v4.0 of the AzureRM Provider. Please use the
+2026-10-24T09:22:49.8840138Z `azurerm_mysql_flexible_server_configuration` resource instead.
+2026-10-24T09:22:49.8840227Z 
+2026-10-24T09:22:49.8840361Z (and 20 more similar warnings elsewhere)
+2026-10-24T09:22:49.9192880Z Terraform plan return code: 0
+2026-10-24T09:22:49.9193273Z Running Terraform apply with plan /home/vscode/production/rover_jobs/20261024091900024874486/tfstates/level2/tfstate/caf_networking.tfplan
+2026-10-24T09:22:49.9193632Z Terraform apply (azurerm) with version v1.3.10
+2026-10-24T09:23:07.7405194Z module.networking.module.virtual_network_gateways["hubvpngw_vngw_prod"].azurerm_virtual_network_gateway.vngw: Modifying... [id=/subscriptions/8d34626a-7ae9-44cb-aeb5-a1a4f6cbfb6d/resourceGroups/ofs-rg-prod-hub-uks/providers/Microsoft.Network/virtualNetworkGateways/ofs-vgw-prod-hubvpngw-uks]
+2026-10-24T09:23:09.2983839Z 
+2026-10-24T09:23:09.2984898Z Error: Plugin did not respond
+2026-10-24T09:23:09.2985277Z 
+2026-10-24T09:23:09.2985761Z   with module.networking.module.virtual_network_gateways["hubvpngw_vngw_prod"].azurerm_virtual_network_gateway.vngw,
+2026-10-24T09:23:09.2986184Z   on aztf/custom/modules/networking/virtual_network_gateways/module.tf line 11, in resource "azurerm_virtual_network_gateway" "vngw":
+2026-10-24T09:23:09.2986544Z   11: resource "azurerm_virtual_network_gateway" "vngw" {
+2026-10-24T09:23:09.2986682Z 
+2026-10-24T09:23:09.2986919Z The plugin encountered an error, and failed to respond to the
+2026-10-24T09:23:09.2987220Z plugin.(*GRPCProvider).ApplyResourceChange call. The plugin logs may contain
+2026-10-24T09:23:09.2987497Z more details.
+2026-10-24T09:23:09.3358962Z 
+2026-10-24T09:23:09.3383476Z Stack trace from the terraform-provider-azurerm_v3.114.0_x5 plugin:
+2026-10-24T09:23:09.3383770Z 
+2026-10-24T09:23:09.3384076Z panic: runtime error: index out of range [0] with length 0
+2026-10-24T09:23:09.3384215Z 
+2026-10-24T09:23:09.3384429Z goroutine 77 [running]:
+2026-10-24T09:23:09.3384818Z github.com/hashicorp/terraform-provider-azurerm/internal/services/network.expandVirtualNetworkGatewayVpnClientConfig(0xc0001c0580?, {{0xc0001c058f, 0x24}, {0xc0001c05c3, 0x13}, {0xc0001c060a, 0x19}})
+2026-10-24T09:23:09.3385343Z 	github.com/hashicorp/terraform-provider-azurerm/internal/services/network/virtual_network_gateway_resource.go:1086 +0x1a1b
+2026-10-24T09:23:09.3385793Z github.com/hashicorp/terraform-provider-azurerm/internal/services/network.resourceVirtualNetworkGatewayUpdate(0xc005583900, {0x7365220?, 0xc0005de000})
+2026-10-24T09:23:09.3386245Z 	github.com/hashicorp/terraform-provider-azurerm/internal/services/network/virtual_network_gateway_resource.go:824 +0x585
+2026-10-24T09:23:09.3386689Z github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*Resource).update(0x8bd5928?, {0x8bd5928?, 0xc0055bfd70?}, 0xd?, {0x7365220?, 0xc0005de000?})
+2026-10-24T09:23:09.3387091Z 	github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/resource.go:800 +0x163
+2026-10-24T09:23:09.3387844Z github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*Resource).Apply(0xc0019e8e00, {0x8bd5928, 0xc0055bfd70}, 0xc001f6e340, 0xc005583780, {0x7365220, 0xc0005de000})
+2026-10-24T09:23:09.3388264Z 	github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/resource.go:919 +0x83a
+2026-10-24T09:23:09.3388674Z github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*GRPCProviderServer).ApplyResourceChange(0xc000aa29f0, {0x8bd5928?, 0xc0055bfc80?}, 0xc0006e17c0)
+2026-10-24T09:23:09.3389213Z 	github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/grpc_provider.go:1078 +0xdbc
+2026-10-24T09:23:09.3389620Z github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server.(*server).ApplyResourceChange(0xc001ee1540, {0x8bd5928?, 0xc0055bf290?}, 0xc002f2e9a0)
+2026-10-24T09:23:09.3390009Z 	github.com/hashicorp/terraform-plugin-go@v0.23.0/tfprotov5/tf5server/server.go:865 +0x3d0
+2026-10-24T09:23:09.3390439Z github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/tfplugin5._Provider_ApplyResourceChange_Handler({0x8077640?, 0xc001ee1540}, {0x8bd5928, 0xc0055bf290}, 0xc005582c80, 0x0)
+2026-10-24T09:23:09.3390872Z 	github.com/hashicorp/terraform-plugin-go@v0.23.0/tfprotov5/internal/tfplugin5/tfplugin5_grpc.pb.go:518 +0x169
+2026-10-24T09:23:09.3391290Z google.golang.org/grpc.(*Server).processUnaryRPC(0xc0001e0e00, {0x8bd5928, 0xc0055bf200}, {0x8c01b60, 0xc001f18780}, 0xc0055bb0e0, 0xc001ffcb10, 0xe2ad598, 0x0)
+2026-10-24T09:23:09.3391656Z 	google.golang.org/grpc@v1.63.2/server.go:1369 +0xe23
+2026-10-24T09:23:09.3391976Z google.golang.org/grpc.(*Server).handleStream(0xc0001e0e00, {0x8c01b60, 0xc001f18780}, 0xc0055bb0e0)
+2026-10-24T09:23:09.3392286Z 	google.golang.org/grpc@v1.63.2/server.go:1780 +0x1016
+2026-10-24T09:23:09.3392554Z google.golang.org/grpc.(*Server).serveStreams.func2.1()
+2026-10-24T09:23:09.3393059Z 	google.golang.org/grpc@v1.63.2/server.go:1019 +0x8b
+2026-10-24T09:23:09.3393353Z created by google.golang.org/grpc.(*Server).serveStreams.func2 in goroutine 30
+2026-10-24T09:23:09.3393647Z 	google.golang.org/grpc@v1.63.2/server.go:1030 +0x135
+2026-10-24T09:23:09.3393763Z 
+2026-10-24T09:23:09.3393994Z Error: The terraform-provider-azurerm_v3.114.0_x5 plugin crashed!
+2026-10-24T09:23:09.3394127Z 
+2026-10-24T09:23:09.3394360Z This is always indicative of a bug within the plugin. It would be immensely
+2026-10-24T09:23:09.3394654Z helpful if you could report the crash with the plugin's maintainers so that it
+2026-10-24T09:23:09.3394944Z can be fixed. The output above should help diagnose the issue.
+2026-10-24T09:23:09.3395062Z 
+2026-10-24T09:23:09.3626344Z Terraform apply return code: 1
+2026-10-24T09:23:09.3630881Z [41mError 1 on or near line 110: Error running terraform apply; exiting with status 1[0m
+2026-10-24T09:23:09.3631046Z 
+2026-10-24T09:23:09.3631285Z @calling clean_up_variables
+2026-10-24T09:23:09.3631526Z cleanup variables
+2026-10-24T09:23:09.3642949Z clean_up backend_files
+2026-10-24T09:23:09.3743667Z 
+2026-10-24T09:23:09.3776461Z ##[error]Bash exited with code '1'.
+2026-10-24T09:23:09.3784322Z ##[error]Bash wrote one or more lines to the standard error stream.
+2026-10-24T09:23:09.3786622Z ##[error]
+Error: Plugin did not respond
+
+  with module.networking.module.virtual_network_gateways["hubvpngw_vngw_prod"].azurerm_virtual_network_gateway.vngw,
+  on aztf/custom/modules/networking/virtual_network_gateways/module.tf line 11, in resource "azurerm_virtual_network_gateway" "vngw":
+  11: resource "azurerm_virtual_network_gateway" "vngw" {
+
+The plugin encountered an error, and failed to respond to the
+plugin.(*GRPCProvider).ApplyResourceChange call. The plugin logs may contain
+more details.
+
+2026-10-24T09:23:09.3794382Z ##[error]
+Stack trace from the terraform-provider-azurerm_v3.114.0_x5 plugin:
+
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 77 [running]:
+github.com/hashicorp/terraform-provider-azurerm/internal/services/network.expandVirtualNetworkGatewayVpnClientConfig(0xc0001c0580?, {{0xc0001c058f, 0x24}, {0xc0001c05c3, 0x13}, {0xc0001c060a, 0x19}})
+	github.com/hashicorp/terraform-provider-azurerm/internal/services/network/virtual_network_gateway_resource.go:1086 +0x1a1b
+github.com/hashicorp/terraform-provider-azurerm/internal/services/network.resourceVirtualNetworkGatewayUpdate(0xc005583900, {0x7365220?, 0xc0005de000})
+	github.com/hashicorp/terraform-provider-azurerm/internal/services/network/virtual_network_gateway_resource.go:824 +0x585
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*Resource).update(0x8bd5928?, {0x8bd5928?, 0xc0055bfd70?}, 0xd?, {0x7365220?, 0xc0005de000?})
+	github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/resource.go:800 +0x163
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*Resource).Apply(0xc0019e8e00, {0x8bd5928, 0xc0055bfd70}, 0xc001f6e340, 0xc005583780, {0x7365220, 0xc0005de000})
+	github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/resource.go:919 +0x83a
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.(*GRPCProviderServer).ApplyResourceChange(0xc000aa29f0, {0x8bd5928?, 0xc0055bfc80?}, 0xc0006e17c0)
+	github.com/hashicorp/terraform-plugin-sdk/v2@v2.33.0/helper/schema/grpc_provider.go:1078 +0xdbc
+github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server.(*server).ApplyResourceChange(0xc001ee1540, {0x8bd5928?, 0xc0055bf290?}, 0xc002f2e9a0)
+	github.com/hashicorp/terraform-plugin-go@v0.23.0/tfprotov5/tf5server/server.go:865 +0x3d0
+github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/tfplugin5._Provider_ApplyResourceChange_Handler({0x8077640?, 0xc001ee1540}, {0x8bd5928, 0xc0055bf290}, 0xc005582c80, 0x0)
+	github.com/hashicorp/terraform-plugin-go@v0.23.0/tfprotov5/internal/tfplugin5/tfplugin5_grpc.pb.go:518 +0x169
+google.golang.org/grpc.(*Server).processUnaryRPC(0xc0001e0e00, {0x8bd5928, 0xc0055bf200}, {0x8c01b60, 0xc001f18780}, 0xc0055bb0e0, 0xc001ffcb10, 0xe2ad598, 0x0)
+	google.golang.org/grpc@v1.63.2/server.go:1369 +0xe23
+google.golang.org/grpc.(*Server).handleStream(0xc0001e0e00, {0x8c01b60, 0xc001f18780}, 0xc0055bb0e0)
+	google.golang.org/grpc@v1.63.2/server.go:1780 +0x1016
+google.golang.org/grpc.(*Server).serveStreams.func2.1()
+	google.golang.org/grpc@v1.63.2/server.go:1019 +0x8b
+created by google.golang.org/grpc.(*Server).serveStreams.func2 in goroutine 30
+	google.golang.org/grpc@v1.63.2/server.go:1030 +0x135
+
+Error: The terraform-provider-azurerm_v3.114.0_x5 plugin crashed!
+
+This is always indicative of a bug within the plugin. It would be immensely
+helpful if you could report the crash with the plugin's maintainers so that it
+can be fixed. The output above should help diagnose the issue.
+
+
+2026-10-24T09:23:09.3799439Z ##[error][41mError 1 on or near line 110: Error running terraform apply; exiting with status 1[0m
+
+2026-10-24T09:23:09.3950619Z ##[section]Finishing: Terraform Run
